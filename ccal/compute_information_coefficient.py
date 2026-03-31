@@ -1,12 +1,15 @@
 import rpy2.robjects as ro
 from numpy import asarray, exp, finfo, isnan, log, nan, sign, sqrt, unique
-from rpy2.robjects.numpy2ri import numpy2ri
+from rpy2.robjects.conversion import localconverter
+from rpy2.robjects.numpy2ri import converter as numpy2ri_converter
 from rpy2.robjects.packages import importr
 from scipy.stats import pearsonr
 
 eps = finfo(float).eps
 
-ro.conversion.py2ri = numpy2ri
+# Set up numpy-to-R conversion in a context manager
+_converter_context = localconverter(ro.default_converter + numpy2ri_converter)
+_converter_context.__enter__()
 
 mass = importr("MASS")
 
